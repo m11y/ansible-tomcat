@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Semparatus
+  description: Ansible role to install tomat.
+  license: BSD
+  min_ansible_version: 1.6
+  platforms:
+  - name: GenericLinux
+    versions:
+    - all
+    - any
+
+  categories:
+  - development
+  - web
+dependencies:
+  - { role: 'semparatus.jdk' }

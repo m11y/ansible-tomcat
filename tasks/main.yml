@@ -1,0 +1,49 @@
+---
+- name: check tomcat package stat
+  local_action: stat path="{{ tomcat_package }}"
+  register: tomcat_package_stat
+- name: download tomcat
+  local_action: get_url url="{{tomcat_download_url}}" dest="{{tomcat_package}}" sha256sum="{{ tomcat_sha256sum }}"
+  when: tomcat_package_stat.stat.exists == False
+  tags: download
+
+
+- name: insure tomcat install parent dir exists
+  file: path="{{ tomcat_install_dir | dirname }}" state=directory owner={{ ansible_env.USER }} group={{ ansible_env.USER }}
+  sudo: yes
+
+- name: unpacks tomcat
+  unarchive: src="{{ tomcat_package }}" dest="/tmp" creates={{ tomcat_install_dir }}/bin/catalina.sh
+  register: unpack_ret
+
+- name: rename to expected name
+  command: mv /tmp/apache-tomcat-{{ tomcat_version }} {{ tomcat_install_dir}}
+  when: unpack_ret.changed == true
+
+# - name: ensures tomcat context config folder exists
+#   file:
+#     path="{{tomcat_dir}}/{{tomcat_version}}/conf/Catalina/localhost"
+#     state=directory
+
+- name: ensures {{tomcat_log_dir}} exists
+  file: path="{{tomcat_log_dir}}" state=directory
+
+- name: configures server.xml
+  template: src=server.xml.j2 dest="{{tomcat_install_dir}}/conf/server.xml"
+
+- name: configures tomcat-users.xml
+  template: src="tomcat-users.xml.j2" dest="{{tomcat_install_dir}}/conf/tomcat-users.xml"
+
+- name: configures logging.properties
+  template: src="{{ tomcat_logging_template }}" dest="{{tomcat_install_dir}}/conf/logging.properties"
+
+- name: ensures executable scripts have the right permissions
+  file: path="{{tomcat_install_dir}}/bin/{{item}}" mode=0755 state=file
+  with_items:
+    - startup.sh
+    - catalina.sh
+    - shutdown.sh
+
+- name: set tomcat manage app state
+  file: path={{ tomcat_install_dir }}/webapps state=absent
+  when: tomcat_keep_manage_app == false

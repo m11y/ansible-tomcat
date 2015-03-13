@@ -1,0 +1,8 @@
+---
+
+- hosts: all
+  roles:
+  - { role: 'semparatus.jdk' }
+  - role: 'ansible-tomcat'
+    tomcat_version: '8.0.20'
+    tomcat_install_dir: "/wiz/server/tomcat-{{ tomcat_version }}.app"
