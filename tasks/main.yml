@@ -21,9 +21,9 @@
   command: mv /tmp/apache-tomcat-{{ tomcat_version }} {{ tomcat_install_dir}}
   when: unpack_ret.changed == true
 
-- name: set tomcat manage app state
-  file: path={{ tomcat_install_dir }}/webapps state=absent
-  # is new and do not keep manage app
+- name: delete tomcat manage app if needed
+  shell: "rm -r {{ tomcat_install_dir }}/webapps/*"
+  # if sets do not keep manage app and newly install, then delete webapps/*
   when: tomcat_keep_manage_app == false and unpack_ret.changed == true
 
 # - name: ensures tomcat context config folder exists
