@@ -8,17 +8,23 @@
   tags: download
 
 
-- name: insure tomcat install parent dir exists
-  file: path="{{ tomcat_install_dir | dirname }}" state=directory owner={{ ansible_env.USER }} group={{ ansible_env.USER }}
-  sudo: yes
 
-- name: unpacks tomcat
+- name: unpacks tomcat to tmp dir
   unarchive: src="{{ tomcat_package }}" dest="/tmp" creates={{ tomcat_install_dir }}/bin/catalina.sh
   register: unpack_ret
+
+- name: insure tomcat install dir parent dir exists
+  file: path="{{ tomcat_install_dir | dirname }}" state=directory owner={{ ansible_env.USER }} group={{ ansible_env.USER }}
+  sudo: yes
 
 - name: rename to expected name
   command: mv /tmp/apache-tomcat-{{ tomcat_version }} {{ tomcat_install_dir}}
   when: unpack_ret.changed == true
+
+- name: set tomcat manage app state
+  file: path={{ tomcat_install_dir }}/webapps state=absent
+  # is new and do not keep manage app
+  when: tomcat_keep_manage_app == false and unpack_ret.changed == true
 
 # - name: ensures tomcat context config folder exists
 #   file:
@@ -43,7 +49,3 @@
     - startup.sh
     - catalina.sh
     - shutdown.sh
-
-- name: set tomcat manage app state
-  file: path={{ tomcat_install_dir }}/webapps state=absent
-  when: tomcat_keep_manage_app == false
