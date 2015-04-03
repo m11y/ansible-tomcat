@@ -5,4 +5,4 @@
   - { role: 'semparatus.jdk' }
   - role: 'ansible-tomcat'
     tomcat_version: '8.0.20'
-    tomcat_install_dir: "/wiz/server/tomcat-{{ tomcat_version }}.app"
+    tomcat_install_dir: "/opt/tomcat-{{ tomcat_version }}.appname"

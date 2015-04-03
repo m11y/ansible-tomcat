@@ -7,6 +7,7 @@ Ansible role to install tomat, forked from https://github.com/alexanderjardim/to
 Role Variables
 --------------
 ```
+---
 # version
 tomcat_version: "8.0.20"
 tomcat_install_dir: '/opt/tomcat-{{ tomcat_version }}'
@@ -18,6 +19,7 @@ tomcat_port: 8080
 tomcat_address: "{{ ansible_eth0.ipv4.address }}"
 tomcat_connection_timeout: 20000   #in milisseconds
 tomcat_protocol: "org.apache.coyote.http11.Http11NioProtocol"
+tomcat_uri_encoding: "UTF-8"
 tomcat_shutdown_port: 8005
 tomcat_redirect_port: 8443
 tomcat_ajp_port: -1    # -1 means do not use ajp
@@ -32,6 +34,8 @@ tomcat_keep_manage_app: false
 
 # users
 tomcat_users: []
+# opts
+tomcat_catalina_opts: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
 
 ```
 
@@ -46,7 +50,10 @@ Example Playbook
 ```
     - hosts: servers
       roles:
-         - { role: semparatus.tomcat }
+      - role: 'ansible-tomcat'
+        tomcat_version: '8.0.20'
+        tomcat_install_dir: "/opt/tomcat-{{ tomcat_version }}.appname"
+
 ```
 
 License

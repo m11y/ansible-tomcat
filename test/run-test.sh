@@ -4,4 +4,6 @@ mkdir -p roles
 
 ln -sfn ../../ roles/ansible-tomcat
 
-vagrant up
+vagrant up --no-provision
+
+vagrant provision

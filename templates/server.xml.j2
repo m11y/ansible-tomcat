@@ -67,7 +67,7 @@
     -->
     <Connector port="{{ tomcat_port }}" protocol="{{ tomcat_protocol }}" address="{{ tomcat_address }}"
                connectionTimeout="{{ tomcat_connection_timeout }}"
-               redirectPort="{{ tomcat_redirect_port }}" />
+               redirectPort="{{ tomcat_redirect_port }}" URIEncoding="{{ tomcat_uri_encoding }}"/>
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"

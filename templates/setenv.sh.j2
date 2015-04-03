@@ -1,0 +1,5 @@
+#!/bin/bash
+
+{% if  tomcat_catalina_opts is defined %}
+CATALINA_OPTS="{{ tomcat_catalina_opts }}"
+{% endif %}
