@@ -32,6 +32,8 @@ tomcat_logging_template: 'logging.properties.j2'
 tomcat_access_log: false
 tomcat_keep_manage_app: false
 
+# roles
+tomcat_roles: []
 # users
 tomcat_users: []
 # opts
